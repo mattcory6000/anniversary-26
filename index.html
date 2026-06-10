@@ -215,6 +215,31 @@
     line-height: 1.45;
   }
 
+  /* ---- finale: the scanned studio portrait, matted in gold ---- */
+  .finale {
+    margin: 24px -16px 112px;   /* a touch wider than the stream: larger presence */
+  }
+
+  .finale .frame {
+    border: 1px solid var(--shine);
+    padding: 14px;              /* inner matting so the photo reads as framed */
+    border-radius: 8px;
+    background: var(--ink-soft);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .finale .frame img {
+    border-radius: 3px;
+    box-shadow: none;
+  }
+
+  .finale .caption {
+    text-align: center;
+    font-size: 23px;
+    color: var(--shine-soft);
+    margin-top: 24px;
+  }
+
   /* ---- letter ---- */
   .letter {
     background: var(--ink-soft);
@@ -294,7 +319,7 @@
 
 <section class="letter">
   <div class="wrap">
-    <div class="salutation">Happy anniversary, Wendy,</div>
+    <div class="salutation">Happy anniversary!</div>
     <!-- ============================================ -->
     <!-- YOUR LETTER GOES HERE. Each <p> is a paragraph. -->
     <!-- ============================================ -->
@@ -327,7 +352,8 @@ const PHOTO_EXT = "jpeg"; // must match actual extension and case
 
 /* ---- render ---- */
 const stream = document.getElementById("stream");
-for (let i = 1; i <= PHOTO_COUNT; i++) {
+// 1.jpeg is handled separately as the closing finale (see below), so start at 2.
+for (let i = 2; i <= PHOTO_COUNT; i++) {
   const src = `images/${i}.${PHOTO_EXT}`;
   const fig = document.createElement("figure");
   fig.className = "moment";
@@ -344,6 +370,17 @@ for (let i = 1; i <= PHOTO_COUNT; i++) {
     }
   }).catch(() => {});
 }
+
+/* ---- finale: 1.jpeg is a recent scan of a printed studio portrait, so its
+   EXIF date is wrong. Render it last, framed in gold, with no year tag and
+   no exifYear() call. ---- */
+const finale = document.createElement("figure");
+finale.className = "moment finale";
+finale.innerHTML = `
+  <div class="frame"><img src="images/1.${PHOTO_EXT}" alt="" loading="lazy"></div>
+  <div class="caption">Where it all began</div>
+`;
+stream.appendChild(finale);
 
 /* ---- minimal EXIF reader: returns the year from DateTimeOriginal ---- */
 async function exifYear(url) {
