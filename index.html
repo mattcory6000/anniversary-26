@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Twenty-Six Years</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #131a24;        /* rainy evening blue, not black */
+    --ink-soft: #1b2330;
+    --shine: #d9a441;      /* candlelight gold */
+    --shine-soft: #e8c97d;
+    --paper: #f2ede4;      /* warm off-white text */
+    --mist: #9aa3ae;       /* muted captions */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* ---- golden thread: scroll progress, like the song playing through ---- */
+  #thread {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--shine), var(--shine-soft));
+    z-index: 100;
+    transition: width 0.1s linear;
+  }
+
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---- hero ---- */
+  .hero {
+    min-height: 88svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding-top: 48px;
+  }
+
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--shine);
+    margin-bottom: 28px;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: 0.01em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--shine-soft);
+  }
+
+  .hero .date {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-top: 28px;
+  }
+
+  /* ---- player ---- */
+  .player {
+    padding: 16px 0 8px;
+    text-align: center;
+  }
+
+  .player .cue {
+    font-style: italic;
+    font-size: 22px;
+    color: var(--shine-soft);
+    margin-bottom: 20px;
+  }
+
+  .player iframe {
+    border-radius: 14px;
+    width: 100%;
+    height: 152px;
+    border: 0;
+  }
+
+  #play-btn {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    border: 1px solid rgba(217, 164, 65, 0.6);
+    background: radial-gradient(circle at 35% 30%, rgba(232, 201, 125, 0.18), rgba(217, 164, 65, 0.06));
+    color: var(--shine-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 0 0 rgba(217, 164, 65, 0.35);
+    animation: glow 2.6s ease-in-out infinite;
+  }
+
+  #play-btn:active { transform: scale(0.94); }
+
+  #play-btn:focus-visible {
+    outline: 2px solid var(--shine);
+    outline-offset: 4px;
+  }
+
+  #play-btn svg { margin-left: 4px; }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 164, 65, 0.35); }
+    50%      { box-shadow: 0 0 0 14px rgba(217, 164, 65, 0); }
+  }
+
+  #embed-holder {
+    margin-top: 20px;
+    opacity: 1;
+    transition: opacity 0.8s ease;
+  }
+
+  #embed-holder.hidden {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin: 0;
+  }
+
+  #embed-holder iframe { border-radius: 14px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #play-btn { animation: none; }
+  }
+
+  .player .scroll-hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-top: 32px;
+  }
+
+  .player .scroll-hint::after {
+    content: "↓";
+    display: block;
+    font-size: 16px;
+    margin-top: 10px;
+    color: var(--shine);
+  }
+
+  /* ---- photo stream ---- */
+  .stream { padding: 64px 0 32px; }
+
+  .moment {
+    margin-bottom: 96px;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .moment.lit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .moment img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  .moment .year {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    color: var(--shine);
+    margin: 18px 0 6px;
+  }
+
+  .moment .caption {
+    font-size: 21px;
+    font-style: italic;
+    color: var(--paper);
+    line-height: 1.45;
+  }
+
+  /* ---- letter ---- */
+  .letter {
+    background: var(--ink-soft);
+    border-top: 1px solid rgba(217, 164, 65, 0.25);
+    border-bottom: 1px solid rgba(217, 164, 65, 0.25);
+    padding: 72px 0;
+    margin-top: 32px;
+  }
+
+  .letter .salutation {
+    font-size: 30px;
+    font-style: italic;
+    color: var(--shine-soft);
+    margin-bottom: 28px;
+  }
+
+  .letter p {
+    font-size: 21px;
+    margin-bottom: 22px;
+  }
+
+  .letter .signoff {
+    font-size: 26px;
+    font-style: italic;
+    margin-top: 36px;
+  }
+
+  /* ---- footer ---- */
+  footer {
+    text-align: center;
+    padding: 56px 24px 72px;
+  }
+
+  footer .mark {
+    font-style: italic;
+    font-size: 19px;
+    color: var(--mist);
+  }
+
+  footer .years {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--shine);
+    margin-top: 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .moment { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="thread"></div>
+
+<header class="hero wrap">
+  <div class="eyebrow">Come Rain or Come Shine</div>
+  <h1>Wendy,<br>it&rsquo;s been <em>twenty-six years</em></h1>
+  <div class="date">June 10, 2000 &middot; June 10, 2026</div>
+</header>
+
+<section class="player wrap">
+  <div class="cue">Press play. Then scroll.</div>
+  <button id="play-btn" aria-label="Play our song">
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true">
+      <path d="M8 5.5v13l11-6.5z"/>
+    </svg>
+  </button>
+  <div id="embed-holder" class="hidden"><div id="embed-target"></div></div>
+  <div class="scroll-hint">A few things I never want to forget</div>
+</section>
+
+<main class="stream wrap" id="stream"></main>
+
+<section class="letter">
+  <div class="wrap">
+    <div class="salutation">Happy anniversary, Wendy,</div>
+    <!-- ============================================ -->
+    <!-- YOUR LETTER GOES HERE. Each <p> is a paragraph. -->
+    <!-- ============================================ -->
+    <p>I'm with you always,</p>
+    <p>I'm with you rain or shine.</p>
+    <div class="signoff"> <br>Matt</div>
+  </div>
+</section>
+
+<footer>
+  <div class="mark">Made for you in Tennessee.</div>
+  <div class="years">XXVI</div>
+</footer>
+
+<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+<script>
+/* ==========================================================
+   EDIT THIS ARRAY AND NOTHING ELSE.
+   Drop photos into the /images folder, then list them here
+   in the order you want them to appear. Year is optional;
+   leave it as "" to hide the year tag for that photo.
+   ========================================================== */
+/* ==========================================================
+   PHOTOS: name them 1.jpeg through 26.jpeg in /images.
+   Year is read automatically from each photo's EXIF data;
+   if a photo has none, its year tag is simply hidden.
+   ========================================================== */
+const PHOTO_COUNT = 26;
+const PHOTO_EXT = "jpeg"; // must match actual extension and case
+
+/* ---- render ---- */
+const stream = document.getElementById("stream");
+for (let i = 1; i <= PHOTO_COUNT; i++) {
+  const src = `images/${i}.${PHOTO_EXT}`;
+  const fig = document.createElement("figure");
+  fig.className = "moment";
+  fig.innerHTML = `
+    <img src="${src}" alt="" loading="lazy">
+    <div class="year" hidden></div>
+  `;
+  stream.appendChild(fig);
+  exifYear(src).then(year => {
+    if (year) {
+      const tag = fig.querySelector(".year");
+      tag.textContent = year;
+      tag.hidden = false;
+    }
+  }).catch(() => {});
+}
+
+/* ---- minimal EXIF reader: returns the year from DateTimeOriginal ---- */
+async function exifYear(url) {
+  const buf = await (await fetch(url)).arrayBuffer();
+  const v = new DataView(buf);
+  if (v.getUint16(0) !== 0xFFD8) return null; // not a JPEG
+
+  // find APP1/Exif segment
+  let off = 2;
+  while (off < v.byteLength - 4) {
+    if (v.getUint8(off) !== 0xFF) break;
+    const marker = v.getUint8(off + 1);
+    const size = v.getUint16(off + 2);
+    if (marker === 0xE1 &&
+        v.getUint32(off + 4) === 0x45786966 /* "Exif" */) {
+      return parseTiff(v, off + 10);
+    }
+    if (marker === 0xDA) break; // start of scan; no EXIF found
+    off += 2 + size;
+  }
+  return null;
+
+  function parseTiff(v, tiff) {
+    const little = v.getUint16(tiff) === 0x4949;
+    const u16 = o => v.getUint16(o, little);
+    const u32 = o => v.getUint32(o, little);
+    const readAscii = (entry) => {
+      const count = u32(entry + 4);
+      const valOff = count > 4 ? tiff + u32(entry + 8) : entry + 8;
+      let s = "";
+      for (let j = 0; j < count - 1; j++) s += String.fromCharCode(v.getUint8(valOff + j));
+      return s;
+    };
+    const scanIfd = (ifd, wantTag) => {
+      const n = u16(ifd);
+      for (let j = 0; j < n; j++) {
+        const entry = ifd + 2 + j * 12;
+        if (u16(entry) === wantTag) return entry;
+      }
+      return null;
+    };
+    const ifd0 = tiff + u32(tiff + 4);
+    // DateTimeOriginal lives in the Exif sub-IFD (tag 0x8769)
+    const exifPtr = scanIfd(ifd0, 0x8769);
+    if (exifPtr) {
+      const subIfd = tiff + u32(exifPtr + 8);
+      const dto = scanIfd(subIfd, 0x9003);
+      if (dto) {
+        const s = readAscii(dto); // "YYYY:MM:DD HH:MM:SS"
+        if (/^\d{4}/.test(s)) return s.slice(0, 4);
+      }
+    }
+    // fallback: IFD0 DateTime
+    const dt = scanIfd(ifd0, 0x0132);
+    if (dt) {
+      const s = readAscii(dt);
+      if (/^\d{4}/.test(s)) return s.slice(0, 4);
+    }
+    return null;
+  }
+}
+
+/* ---- our song: hidden until she presses play ---- */
+let spotifyController = null;
+window.onSpotifyIframeApiReady = (IFrameAPI) => {
+  IFrameAPI.createController(
+    document.getElementById("embed-target"),
+    { uri: "spotify:track:2htH7r8oqqEwp3BB6oh2cU", theme: "dark", height: 152 },
+    (controller) => { spotifyController = controller; }
+  );
+};
+
+document.getElementById("play-btn").addEventListener("click", function () {
+  if (spotifyController) spotifyController.play();
+  document.getElementById("embed-holder").classList.remove("hidden");
+  this.style.display = "none";
+});
+
+/* ---- scroll reveal ---- */
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!reduced) {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("lit");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".moment").forEach(m => io.observe(m));
+} else {
+  document.querySelectorAll(".moment").forEach(m => m.classList.add("lit"));
+}
+
+/* ---- golden thread progress ---- */
+const thread = document.getElementById("thread");
+addEventListener("scroll", () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  thread.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + "%";
+}, { passive: true });
+</script>
+
+</body>
+</html>
